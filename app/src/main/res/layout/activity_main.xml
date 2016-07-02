@@ -6,33 +6,31 @@
 
     <Button
         android:id="@+id/write"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="150dp"
         android:background="@drawable/pencil"
+        android:layout_marginLeft="182dp"
+        android:layout_marginTop="230dp"
 
-        android:layout_above="@+id/read"
-        android:layout_alignParentEnd="true" />
+    />
     <Button
         android:id="@+id/read"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/read"
-        android:layout_alignParentBottom="true"
-        android:layout_alignEnd="@+id/write" />
+
+        android:layout_marginTop="366dp"
+
+        android:layout_alignParentEnd="true"
+    />
+
     <Button
         android:id="@+id/reset"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@drawable/reset"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
-    <Button
-        android:id="@+id/set_color"
-        android:text="@string/set_color"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/write"
-        android:layout_centerHorizontal="true">
-    </Button>
+        android:background="@drawable/reset"
+        android:layout_alignTop="@+id/read"
+        android:layout_alignParentStart="true" />
+
 
 </RelativeLayout>

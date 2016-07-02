@@ -36,7 +36,7 @@ public class MainActivity extends BaseActivity {
         Button write = (Button) findViewById(R.id.write);
         Button read = (Button) findViewById(R.id.read);
         Button reset = (Button)findViewById(R.id.reset);
-        Button set_color = (Button)findViewById(R.id.set_color);
+
 
         write.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,27 +59,6 @@ public class MainActivity extends BaseActivity {
             public void onClick(View v) {
             Intent intent = new Intent(MainActivity.this,ResetActivity.class);
                 startActivity(intent);
-            }
-        });
-        set_color.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("选择一种颜色");
-                String[] colors = {"蓝色","绿色"};
-                builder.setItems(colors,new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which){
-                            case 0:
-                            {
-//                                Layout layout = (Layout)findViewById(R.id.read);
-                            }
-
-                        }
-                    }
-                });
             }
         });
     }

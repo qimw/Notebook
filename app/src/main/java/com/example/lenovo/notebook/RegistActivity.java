@@ -2,6 +2,7 @@ package com.example.lenovo.notebook;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -21,12 +22,16 @@ public class RegistActivity extends BaseActivity {
     private EditText password_confirm;
 
     protected  void onCreate(Bundle savedInstanceState){
+        Log.d("holo","hahah");
         super.onCreate(savedInstanceState);
+        Log.d("holo","hahah");
         setContentView(R.layout.regist);
+        Log.d("holo","hahah");
         reg = (Button) findViewById(R.id.reg);
         quit = (Button)findViewById(R.id.quit);
         password = (EditText)findViewById(R.id.password);
         password_confirm = (EditText)findViewById(R.id.password_confirm);
+        Log.d("holo","hahah");
         reg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
