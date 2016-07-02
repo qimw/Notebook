@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/back_reset">
+
+    <EditText
+        android:id="@+id/old_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/please_enter_previous_password"
+        android:inputType="textPassword"/>
+
+    <EditText
+        android:id="@+id/new_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/old_password"
+        android:hint="@string/please_enter_new_password"
+        android:inputType="textPassword"/>
+
+    <EditText
+        android:id="@+id/con_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/new_password"
+        android:hint="@string/please_enter_new_password_again"
+        android:inputType="textPassword"/>
+    <Button
+        android:id="@+id/reset_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/con_password"
+        android:text="@string/reset"/>
+
+</RelativeLayout>
