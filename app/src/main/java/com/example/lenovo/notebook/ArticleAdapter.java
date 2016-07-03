@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.example.lenovo.notebook.Base.BaseActivity;
 import com.example.lenovo.notebook.Db.Database;
 import com.example.lenovo.notebook.global.NotebookApp;
 
@@ -51,6 +52,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
             Log.d("holo","from click");
             intent.addFlags(intent.FLAG_ACTIVITY_NEW_TASK);
             NotebookApp.getInstance().getApplicationContext().startActivity(intent);
+
         }
 
         @Override

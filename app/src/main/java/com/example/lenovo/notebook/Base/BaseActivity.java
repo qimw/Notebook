@@ -34,8 +34,6 @@ public class BaseActivity extends AppCompatActivity {
             }
         }
     }
-    public void setColor(){
 
-    }
 
 }
