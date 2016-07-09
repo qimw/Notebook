@@ -6,9 +6,11 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.Button;
 
 
@@ -43,6 +45,12 @@ public class IntroduceActivity extends BaseActivity {
         list.add(view2);
         list.add(view3);
 
+        Animation animation = AnimationUtils.loadAnimation(this,R.anim.anim_in);
+        LayoutAnimationController controller = new LayoutAnimationController(animation);
+        controller.setOrder(LayoutAnimationController.ORDER_NORMAL);
+        controller.setDelay(0.3f);
+        viewPager.setLayoutAnimation(controller);
+
         viewPager.setAdapter(new MyAdapter());
         in = (Button)findViewById(R.id.in);
         in.setOnClickListener(new View.OnClickListener() {
@@ -50,9 +58,14 @@ public class IntroduceActivity extends BaseActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(IntroduceActivity.this,RegistActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.anim_in,R.anim.anim_out);
                 finish();
+                overridePendingTransition(R.anim.anim_in,R.anim.anim_out);
             }
         });
+
+        viewPager.startLayoutAnimation();
+
 
     }
 

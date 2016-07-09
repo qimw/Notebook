@@ -27,10 +27,12 @@ public class MainActivity extends BaseActivity {
         if(!sp.getBoolean("isCreated",false)){
             Intent intent = new Intent(MainActivity.this,IntroduceActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.anim_in,R.anim.anim_out);
 
         }else{
             Intent intent = new Intent(MainActivity.this,LoginActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.anim_in,R.anim.anim_out);
         }
 
         Button write = (Button) findViewById(R.id.write);
@@ -44,6 +46,7 @@ public class MainActivity extends BaseActivity {
                 Intent intent = new Intent(MainActivity.this,WriteActivity.class);
                 intent.putExtra("isNew",true);
                 startActivity(intent);
+                overridePendingTransition(R.anim.anim_in,R.anim.anim_out);
             }
         });
 
@@ -52,6 +55,7 @@ public class MainActivity extends BaseActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ReadActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.anim_in,R.anim.anim_out);
             }
         });
         reset.setOnClickListener(new View.OnClickListener() {
@@ -59,6 +63,7 @@ public class MainActivity extends BaseActivity {
             public void onClick(View v) {
             Intent intent = new Intent(MainActivity.this,ResetActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.anim_in,R.anim.anim_out);
             }
         });
     }

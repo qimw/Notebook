@@ -39,6 +39,7 @@ public class ReadArticleActivity extends BaseActivity{
                 intent.putExtra("content",content.getText().toString());
                 finish();
                 startActivity(intent);
+                overridePendingTransition(R.anim.anim_in,R.anim.anim_out);
             }
         });
     }

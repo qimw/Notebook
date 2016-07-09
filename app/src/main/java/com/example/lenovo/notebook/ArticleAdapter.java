@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHolder> {
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnLongClickListener{
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView content;
         TextView title;
@@ -39,7 +39,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
             content = (TextView)v.findViewById(R.id.article_title);
             title = (TextView)v.findViewById(R.id.article_content);
             v.setOnClickListener(this);
-            v.setOnLongClickListener(this);
+//            v.setOnLongClickListener(this);
         }
 
         @Override
@@ -52,27 +52,28 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
             Log.d("holo","from click");
             intent.addFlags(intent.FLAG_ACTIVITY_NEW_TASK);
             NotebookApp.getInstance().getApplicationContext().startActivity(intent);
+            context.overridePendingTransition(R.anim.anim_in,R.anim.anim_out);
 
         }
 
-        @Override
-        public boolean onLongClick(View v) {
-
-                AlertDialog.Builder ab = new AlertDialog.Builder(context);
-                ab.setMessage("是否删除笔记？");
-                ab.setCancelable(true);
-                final View view = v;
-                ab.setPositiveButton("删除", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                });
-            ab.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                }
-            });
+//        @Override
+//        public boolean onLongClick(View v) {
+//
+//                AlertDialog.Builder ab = new AlertDialog.Builder(context);
+//                ab.setMessage("是否删除笔记？");
+//                ab.setCancelable(true);
+//                final View view = v;
+//                ab.setPositiveButton("删除", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                    }
+//                });
+//            ab.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//
+//                }
+//            });
 
 
 //                final Article article = (Article)listView.getItemAtPosition(position);
@@ -92,18 +93,18 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
 //                    public void onClick(DialogInterface dialog, int which) {
 //                    }
 //                });
-                ab.show();
-                return true;
+//                ab.show();
+//                return true;
 
 
 
-        }
+
     }
 
     private List<Article> articleList = new ArrayList<Article>();
-    private Context context;
+    private AppCompatActivity context;
 
-    public ArticleAdapter(List list,Context context){
+    public ArticleAdapter(List list,AppCompatActivity context){
         this.articleList = list;
         this.context = context;
     }
