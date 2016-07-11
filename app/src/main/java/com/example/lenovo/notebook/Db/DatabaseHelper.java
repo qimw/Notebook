@@ -17,7 +17,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String CREATE_DATA = "create table article_one("
             +"id integer primary key autoincrement,"
             +"title text,"
-            +"content text)";
+            +"content text,"
+            + "status int)";
 
 
     public DatabaseHelper (Context context,String name, int version){

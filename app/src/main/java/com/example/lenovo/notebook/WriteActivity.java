@@ -59,10 +59,18 @@ public class WriteActivity extends BaseActivity {
                     Intent intent = new Intent();
                     intent.putExtra("title",article_title);
                     intent.putExtra("content", article_content);
+                    intent.putExtra("status",0);
                     if(id ==-1){
-                        Database.add(intent);
-                        Toast.makeText(WriteActivity.this,"保存成功",Toast.LENGTH_SHORT).show();
-                        finish();
+                        int result = Database.add(intent);
+                        if(result == Database.SAVE_SUCCEED){
+                            Toast.makeText(WriteActivity.this,"保存成功",Toast.LENGTH_SHORT).show();
+                            finish();
+                        }else if(result == Database.TITLE_EXIST){
+                            Toast.makeText(WriteActivity.this,"标题已存在",Toast.LENGTH_SHORT).show();
+                        }else if(result == Database.FAILED_TO_SAVE){
+                            Toast.makeText(WriteActivity.this,"保存失败",Toast.LENGTH_SHORT).show();
+                        }
+
                     }else{
                         intent.putExtra("id",id);
                         Database.update(intent);

@@ -69,17 +69,11 @@ public class ReadActivity extends BaseActivity {
                 Database.remove(intent);
                 articleList.remove(position);
                 adapter.notifyItemRemoved(position);
-
-
-
             }
         };
+
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(mCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
-
-
-
-
 
         if(articleList.size() == 0){
             note_of_no_title.setText("还没有写笔记哦");
@@ -92,7 +86,8 @@ public class ReadActivity extends BaseActivity {
             do{
                 String title = cursor.getString(cursor.getColumnIndex("title"));
                 String content = cursor.getString(cursor.getColumnIndex("content"));
-                Article article = new Article(title,content);
+                int status = cursor.getInt(cursor.getColumnIndex("status"));
+                Article article = new Article(title,content,status);
                 articleList.add(article);
             }while(cursor.moveToNext());
         }

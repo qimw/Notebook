@@ -13,21 +13,32 @@ import com.example.lenovo.notebook.global.NotebookApp;
  * Created by lenovo on 2016/5/7.
  */
 public class Database {
+
+    public static int TITLE_EXIST = 0;
+    public static int FAILED_TO_SAVE = 1;
+    public static int SAVE_SUCCEED = 2;
+
     private static DatabaseHelper dh = new DatabaseHelper(NotebookApp.getInstance().getApplicationContext(),
           "data",1);
     private static SQLiteDatabase db = dh.getWritableDatabase();
 
-    public static void add(Intent article){
+    public static int add(Intent article){
         String title = article.getStringExtra("title");
         if(queryId(title)!=-1){
-            Toast.makeText(NotebookApp.getInstance().getApplicationContext(),"抱歉，标题已经存在。",Toast.LENGTH_SHORT).show();
-            return;
+            return TITLE_EXIST;
         }
         String content = article.getStringExtra("content");
+        int status = article.getIntExtra("status",-1);
+        if(status == -1){
+            Toast.makeText(NotebookApp.getInstance().getApplicationContext(),"保存失败",Toast.LENGTH_SHORT).show();
+            return FAILED_TO_SAVE;
+        }
         ContentValues contentValues = new ContentValues();
         contentValues.put("title",title);
         contentValues.put("content",content);
+        contentValues.put("status",status);//已经完成云同步为1，未完成为0
         db.insert("article_one",null,contentValues);
+        return SAVE_SUCCEED;
     }
 
     public static void update(Intent article){
@@ -51,6 +62,10 @@ public class Database {
 
     public static Cursor query(){
         return db.query("article_one",null,null,null,null,null,null);
+    }
+
+    public static Cursor queryStatus(int status){
+        return db.query("article_one",new String[]{"status"},"status == ?",new String[] {""+status},null,null,null);
     }
 
     public static int queryId(String title){

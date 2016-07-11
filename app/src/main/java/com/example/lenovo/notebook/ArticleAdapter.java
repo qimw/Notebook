@@ -33,11 +33,12 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
 
         TextView content;
         TextView title;
-
+        TextView status;
         public ViewHolder(View v){
             super(v);
             content = (TextView)v.findViewById(R.id.article_title);
             title = (TextView)v.findViewById(R.id.article_content);
+            status = (TextView)v.findViewById(R.id.status);
             v.setOnClickListener(this);
 //            v.setOnLongClickListener(this);
         }
@@ -107,6 +108,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     public ArticleAdapter(List list,AppCompatActivity context){
         this.articleList = list;
         this.context = context;
+
     }
 
     @Override
@@ -118,6 +120,13 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.content.setText(articleList.get(position).getTitle());
         holder.title.setText(articleList.get(position).getContent());
+        int status = articleList.get(position).getStatus();
+        if(status == 0){
+            holder.status.setText("未同步");
+        }else if(status == 1){
+            holder.status.setText("已同步");
+        }
+
     }
 
     @Override
