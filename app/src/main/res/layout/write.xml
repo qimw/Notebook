@@ -1,45 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/back_write">
-    <Button
-        android:id="@+id/save"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/save"
-        android:layout_alignTop="@+id/clean"
-        android:layout_toStartOf="@+id/clean" />
-    <Button
-        android:id="@+id/clean"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/clean"
-        android:layout_marginEnd="97dp"
+    android:layout_height="match_parent" >
+
+    <!-- 底部的按钮 -->
+
+    <LinearLayout
+        android:id="@+id/buttons"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true" />
+        android:background="#666"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
 
-    <ScrollView
-        android:layout_height="match_parent"
+        <View
+            android:id="@+id/button1"
+            android:layout_width="30dp"
+            android:layout_height="28dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/image1"
+            android:gravity="center_horizontal" />
+
+        <View
+            android:id="@+id/button2"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="14dp"
+            android:background="@drawable/image2"
+            android:gravity="center_horizontal" />
+
+        <View
+            android:id="@+id/button3"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="14dp"
+            android:background="@drawable/image3"
+            android:gravity="center_horizontal" />
+    </LinearLayout>
+
+    <!-- 富文本编辑器 -->
+
+    <EditText
+        android:id="@+id/title"
         android:layout_width="match_parent"
-        android:layout_marginTop="50dp"
-        android:layout_marginBottom="50dp">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <EditText
-                android:id="@+id/title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/input_title_here"/>
-            <EditText
-                android:id="@+id/content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/input_content_here"
-                android:layout_below="@id/title"/>
-        </RelativeLayout>
-
-    </ScrollView>
-
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:hint="input title here..."
+        android:background="#fff"
+        android:lineSpacingExtra="10dp"
+        android:textSize="30dp"
+        android:textColor="#444"
+        android:textCursorDrawable="@drawable/cursor_shape"/>
+    <com.example.lenovo.notebook.RichEditor.RichTextEditor
+        android:id="@+id/richEditor"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/title"
+        android:layout_above="@id/buttons"
+        android:background="#fff"
+        />
 </RelativeLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:background="@drawable/back_write">-->
+    <!--<Button-->
+        <!--android:id="@+id/save"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/save"-->
+        <!--android:layout_alignTop="@+id/clean"-->
+        <!--android:layout_toStartOf="@+id/clean" />-->
+    <!--<Button-->
+        <!--android:id="@+id/clean"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/clean"-->
+        <!--android:layout_marginEnd="97dp"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentEnd="true" />-->
+
+    <!--<ScrollView-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_marginTop="50dp"-->
+        <!--android:layout_marginBottom="50dp">-->
+        <!--<RelativeLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent">-->
+            <!--<EditText-->
+                <!--android:id="@+id/title"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:hint="@string/input_title_here"/>-->
+            <!--<EditText-->
+                <!--android:id="@+id/content"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:hint="@string/input_content_here"-->
+                <!--android:layout_below="@id/title"/>-->
+        <!--</RelativeLayout>-->
+
+    <!--</ScrollView>-->
+
+<!--</RelativeLayout>-->

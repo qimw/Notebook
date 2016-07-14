@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.lenovo.notebook.Base.BaseActivity;
+import com.example.lenovo.notebook.BitmapHelper.BitmapHelper;
 import com.example.lenovo.notebook.Db.Database;
 
 import java.util.ArrayList;
@@ -66,7 +67,9 @@ public class ReadActivity extends BaseActivity {
                 int position = viewHolder.getAdapterPosition();
                 Intent intent = new Intent();
                 intent.putExtra("title",(articleList.get(position)).getTitle());
+                intent.putExtra("content",articleList.get(position).getContent());
                 Database.remove(intent);
+                BitmapHelper.delete(intent);
                 articleList.remove(position);
                 adapter.notifyItemRemoved(position);
             }

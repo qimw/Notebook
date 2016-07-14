@@ -18,7 +18,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             +"id integer primary key autoincrement,"
             +"title text,"
             +"content text,"
-            + "status int)";
+            + "status int,"
+            + "cloudID text)";
 
 
     public DatabaseHelper (Context context,String name, int version){

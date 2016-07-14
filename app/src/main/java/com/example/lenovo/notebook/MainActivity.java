@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.text.Layout;
@@ -17,18 +18,23 @@ import com.avos.avoscloud.AVObject;
 import com.example.lenovo.notebook.Base.BaseActivity;
 import com.example.lenovo.notebook.global.NotebookApp;
 
+import java.io.File;
+
 public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
+        //初始化LeanCloud
         AVOSCloud.initialize(this,"iK548FuYvSfdIgyif1HN5ul7-gzGzoHsz","LCAxo0S3wXaUcmtvqlzifw9k");
+        //初始化本地文件夹
+        File dir = new File(Environment. getExternalStorageDirectory()+"/notebookdata");
+        if(!dir.exists()){
+            dir.mkdirs();
+        }
         //SharedPreferences.Editor editor = getSharedPreferences("password",MODE_PRIVATE).edit();
         SharedPreferences sp = getSharedPreferences("password",MODE_PRIVATE);
-
-
-
 
 
         if(!sp.getBoolean("isCreated",false)){

@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.example.lenovo.notebook.Base.BaseActivity;
 import com.example.lenovo.notebook.Db.Database;
+import com.example.lenovo.notebook.RichEditor.Decoder;
 import com.example.lenovo.notebook.global.NotebookApp;
 
 import org.w3c.dom.Text;
@@ -36,8 +37,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         TextView status;
         public ViewHolder(View v){
             super(v);
-            content = (TextView)v.findViewById(R.id.article_title);
-            title = (TextView)v.findViewById(R.id.article_content);
+            content = (TextView)v.findViewById(R.id.article_content);
+            title = (TextView)v.findViewById(R.id.article_title);
             status = (TextView)v.findViewById(R.id.status);
             v.setOnClickListener(this);
 //            v.setOnLongClickListener(this);
@@ -45,90 +46,41 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
 
         @Override
         public void onClick(View view) {
-                            TextView articleTitle = (TextView) view.findViewById(R.id.article_title);
-                TextView articleContent = (TextView) view.findViewById(R.id.article_content);
-                Intent intent = new Intent(NotebookApp.getInstance().getApplicationContext(), ReadArticleActivity.class);
-                intent.putExtra("title", articleTitle.getText().toString());
-                intent.putExtra("content", articleContent.getText().toString());
-            Log.d("holo","from click");
+            TextView articleTitle = (TextView) view.findViewById(R.id.article_title);
+            TextView articleContent = (TextView) view.findViewById(R.id.article_content);
+            Intent intent = new Intent(NotebookApp.getInstance().getApplicationContext(), ReadArticleActivity.class);
+            intent.putExtra("title", articleTitle.getText().toString());
+            intent.putExtra("content", articleContent.getText().toString());
             intent.addFlags(intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("id",Database.queryId(articleTitle.getText().toString()));
+            intent.putExtra("isNew",false);
             NotebookApp.getInstance().getApplicationContext().startActivity(intent);
             context.overridePendingTransition(R.anim.anim_in,R.anim.anim_out);
 
         }
-
-//        @Override
-//        public boolean onLongClick(View v) {
-//
-//                AlertDialog.Builder ab = new AlertDialog.Builder(context);
-//                ab.setMessage("是否删除笔记？");
-//                ab.setCancelable(true);
-//                final View view = v;
-//                ab.setPositiveButton("删除", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                    }
-//                });
-//            ab.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//
-//                }
-//            });
-
-
-//                final Article article = (Article)listView.getItemAtPosition(position);
-//                ab.setPositiveButton("删除", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        Log.d("holo", "5555555555555555555" + new Integer(which).toString()+"   "+new Integer(position).toString());
-//                        Intent intent = new Intent();
-//                        intent.putExtra("title", article.getTitle());
-//                        Database.remove(intent);
-//                        articleList.remove(article);
-//                        adapter.notifyDataSetChanged();
-//                    }
-//                });
-//                ab.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                    }
-//                });
-//                ab.show();
-//                return true;
-
-
-
-
     }
-
     private List<Article> articleList = new ArrayList<Article>();
     private AppCompatActivity context;
 
     public ArticleAdapter(List list,AppCompatActivity context){
         this.articleList = list;
         this.context = context;
-
     }
-
     @Override
     public int getItemCount() {
         return articleList.size();
     }
-
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.content.setText(articleList.get(position).getTitle());
-        holder.title.setText(articleList.get(position).getContent());
+        holder.content.setText(articleList.get(position).getContent());
+        holder.title.setText(articleList.get(position).getTitle());
         int status = articleList.get(position).getStatus();
         if(status == 0){
             holder.status.setText("未同步");
         }else if(status == 1){
             holder.status.setText("已同步");
         }
-
     }
-
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.article,parent,false);

@@ -4,27 +4,30 @@
     android:layout_height="match_parent"
     android:background="@drawable/back_read_article">
 
-        <ScrollView
-            android:id="@+id/scrollView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                        <TextView
-                            android:id="@+id/read_title"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textSize="30dp"/>
-                        <TextView
-                            android:id="@+id/read_content"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textSize="15dp"
-                            android:layout_below="@id/read_title"/>
-                </RelativeLayout>
+        <!--<ScrollView-->
+            <!--android:id="@+id/scrollView"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent">-->
+                <!--<RelativeLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content">-->
+                        <!--<TextView-->
+                            <!--android:id="@+id/read_title"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:textSize="30dp"/>-->
+                        <!--<TextView-->
+                            <!--android:id="@+id/read_content"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:textSize="15dp"-->
+                            <!--android:layout_below="@id/read_title"/>-->
+                <!--</RelativeLayout>-->
 
-        </ScrollView>
+        <!--</ScrollView>-->
+
+
+
         <Button
             android:id="@+id/edit_article"
             android:layout_width="wrap_content"
@@ -34,7 +37,12 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true" />
 
-
+        <ScrollView
+            android:id="@+id/article"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/edit_article">
+        </ScrollView>
 
 
 

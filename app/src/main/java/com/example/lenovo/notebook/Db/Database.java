@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.parser.deserializer.DateDeserializer;
 import com.example.lenovo.notebook.global.NotebookApp;
 
 /**
@@ -14,9 +15,9 @@ import com.example.lenovo.notebook.global.NotebookApp;
  */
 public class Database {
 
-    public static int TITLE_EXIST = 0;
-    public static int FAILED_TO_SAVE = 1;
-    public static int SAVE_SUCCEED = 2;
+    public static final int TITLE_EXIST = 0;
+    public static final int FAILED_TO_SAVE = 1;
+    public static final int SAVE_SUCCEED = 2;
 
     private static DatabaseHelper dh = new DatabaseHelper(NotebookApp.getInstance().getApplicationContext(),
           "data",1);
@@ -30,7 +31,6 @@ public class Database {
         String content = article.getStringExtra("content");
         int status = article.getIntExtra("status",-1);
         if(status == -1){
-            Toast.makeText(NotebookApp.getInstance().getApplicationContext(),"保存失败",Toast.LENGTH_SHORT).show();
             return FAILED_TO_SAVE;
         }
         ContentValues contentValues = new ContentValues();
@@ -45,9 +45,11 @@ public class Database {
         String title = article.getStringExtra("title");
         String content = article.getStringExtra("content");
         Integer id = article.getIntExtra("id",-1);
+        int status = article.getIntExtra("status",0);
         ContentValues values = new ContentValues();
         values.put("content",content);
         values.put("title", title);
+        values.put("status",status);
         db.update("article_one", values, "id = ?", new String[]{id.toString()});
         Log.d("holo","up sudcc");
     }
@@ -80,6 +82,22 @@ public class Database {
             }
         }
         return -1;
+    }
+
+    public static void removeAll(){
+        Cursor cursor = Database.query();
+        if(cursor.moveToFirst()){
+            do {
+                String title = cursor.getString(cursor.getColumnIndex("title"));
+                Intent intent = new Intent();
+                intent.putExtra("title",title);
+                Database.remove(intent);
+            }while(cursor.moveToNext());
+        }
+        cursor.close();
+    }
+    public static void ifExisted(String title){
+
     }
 
 
