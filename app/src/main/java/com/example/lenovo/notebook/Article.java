@@ -7,11 +7,13 @@ public class Article {
     private String title;
     private String content;
     private int status;
+    private long id;
 
-    public Article(String title, String content,int status){
+    public Article(String title, String content,int status,long id){
         this.content = content;
         this.title = title;
         this.status = status;
+        this.id = id;
     }
 
     public String getTitle(){
@@ -23,5 +25,8 @@ public class Article {
     }
     public int getStatus(){
         return status;
+    }
+    public long getId(){
+        return id;
     }
 }

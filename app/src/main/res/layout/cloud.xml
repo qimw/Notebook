@@ -1,18 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/back_cloud">
 
 
-    <Button
-        android:id="@+id/updateCloud"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="同步到云"/>
     <Button
         android:id="@+id/updateLocal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="同步到本地"/>
+        android:text="同步到本地" />
 
-</LinearLayout>
+    <Button
+        android:id="@+id/updateCloud"
+        android:layout_below="@id/updateLocal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="同步到云"/>
+    <Button
+        android:id="@+id/get_cloud_article_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/get_article_list_in_cloud"
+        android:layout_below="@id/updateCloud"/>
+    <TextView
+        android:id="@+id/text"
+        android:layout_below="@id/get_cloud_article_list"
+        android:text="@string/articles_in_cloud"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size"/>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/article_in_cloud"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/text"
+        android:visibility="visible">
+    </android.support.v7.widget.RecyclerView>
+
+
+
+</RelativeLayout>

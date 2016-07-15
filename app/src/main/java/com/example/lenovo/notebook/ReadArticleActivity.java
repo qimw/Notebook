@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.example.lenovo.notebook.Base.BaseActivity;
 import com.example.lenovo.notebook.Db.Database;
 import com.example.lenovo.notebook.R;
+import com.example.lenovo.notebook.RichEditor.DataImageView;
 import com.example.lenovo.notebook.RichEditor.Decoder;
 import com.example.lenovo.notebook.RichEditor.RichTextEditor;
 
@@ -28,6 +29,7 @@ import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by lenovo on 2016/5/9.
@@ -43,21 +45,17 @@ public class ReadArticleActivity extends BaseActivity{
         setContentView(R.layout.read_article);
         edit_article = (Button)findViewById(R.id.edit_article);
         scrollView = (ScrollView) findViewById(R.id.article);
-        Intent intent = getIntent();
-         final String title = intent.getStringExtra("title");
-         final String content = intent.getStringExtra("content");
-//        title = (TextView)findViewById(R.id.read_title);
-//        content = (TextView)findViewById(R.id.read_content);
-//        title.setText(intent.getStringExtra("title"));
-//        content.setText(intent.getStringExtra("content"));
-        decodeContent(intent);
-        edit_article.bringToFront();
+        final Intent article = getIntent();
+         final String title = article.getStringExtra("title");
+         final String content = article.getStringExtra("content");
+
+        decodeContent(article);
         edit_article.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ReadArticleActivity.this,WriteActivity.class);
                 intent.putExtra("isNew",false);
-                intent.putExtra("id", Database.queryId(title));
+                intent.putExtra("id", article.getLongExtra("id",0));
                 intent.putExtra("title",title);
                 intent.putExtra("content",content);
                 finish();
@@ -69,45 +67,32 @@ public class ReadArticleActivity extends BaseActivity{
 
 
     private void decodeContent(Intent intent){
-
-        int top,bottom,right,left;
-        top = bottom = 0;
-        right = left = 10;
-
-//        Intent result = Decoder.DecodeForRead(intent);
-//        ArrayList<String> article = result.getStringArrayListExtra("article");
-//        ArrayList<String> pictureAddress = result.getStringArrayListExtra("pictureAddress");
-
-
-        RelativeLayout relativeLayout = new RelativeLayout(this);
-        RelativeLayout.LayoutParams relativeLayoutParams = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-//        linearLayoutParams.setMargins(left,top,top,bottom);
+        LinearLayout linearLayout = new LinearLayout(this);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
         int id = 1;
         //添加标题
         String title = intent.getStringExtra("title");
         TextView article_title = new TextView(this);
-        article_title.setId(id);
         article_title.setTextSize(TypedValue.COMPLEX_UNIT_SP,30);
         article_title.setText(title);
-        relativeLayout.addView(article_title);
+        linearLayout.addView(article_title);
         id++;
         //添加内容
         String contentCode = intent.getStringExtra("content");
         int former = 0;
-        for(int i = 0 ; i < contentCode.length() ; i++){
 
+        for(int i = 0 ; i < contentCode.length() ; i++){
             if((i == contentCode.length()-1)
-                    ||(contentCode.charAt(i) == '|' && contentCode.substring(i,(i+4)>contentCode.length()? contentCode.length():(i+4)).equals("|pic"))){
-                if((i+4)>contentCode.length()){
+                    ||(contentCode.charAt(i) == '|' &&(i + 14)<contentCode.length()&&(contentCode.charAt(i+14)) == '|')){
+                if((i+14)>contentCode.length()){
                     i = contentCode.length();
                 }
                 //设置前面的文字
                 if(former < i){
                     String tempContent = contentCode.substring(former,i);
+                    Log.d("holo","former:" + former + "i:" + i);
                     TextView content = new TextView(this);
-                    content.setId(id);
+
                     content.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
                     content.setText(tempContent);
                     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
@@ -115,42 +100,35 @@ public class ReadArticleActivity extends BaseActivity{
                             ViewGroup.LayoutParams.WRAP_CONTENT);
                     params.addRule(RelativeLayout.BELOW,id-1);
                     content.setLayoutParams(params);
-                    relativeLayout.addView(content);
+                    linearLayout.addView(content);
                     id++;
                     if(i == contentCode.length()){
                         break;
                     }
                 }
 
-                String tempImageNumber = null;
-                //检测图片编号是一位数还是两位数
-                if(contentCode.charAt(i + 5) == '|'){
-                    tempImageNumber = contentCode.substring(i + 4,i + 5);
-                    former = i + 6;
-                    i += 5;//因为循环中会自增
-                }else if(contentCode.charAt(i + 6) == '|'){
-                    tempImageNumber = contentCode.substring(i + 4,i + 6);
-                    former = i + 7;
-                    i += 6;//因为循环中会自增
-                }
-                int imageNumber;
-                imageNumber = new Integer(tempImageNumber);
-                String location = Environment. getExternalStorageDirectory()+"/notebookdata/" + title + imageNumber + ".jpg";
-                Bitmap tempBitmap = RichTextEditor.getScaledBitmap(location,relativeLayoutParams.width-10);
+
+                String number = contentCode.substring(i + 1,i + 14);
+                Log.d("holo","from decode in read id=" + number);
+                former = i;
+                former += 15;
+                i += 14;
+                String location = Environment. getExternalStorageDirectory()+"/notebookdata/" + number + ".jpg";
+                Bitmap tempBitmap = RichTextEditor.getScaledBitmap(location,
+                        ReadArticleActivity.this.getWindowManager().getDefaultDisplay().getWidth());
                 ImageView image = new ImageView(this);
                 image.setImageBitmap(tempBitmap);
                 image.setId(id);
+                int imageHeight = ReadArticleActivity.this.getWindowManager().getDefaultDisplay().getWidth() * tempBitmap.getHeight() / tempBitmap.getWidth();
                 RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.setMargins(0,0,0,0);
-                params.addRule(RelativeLayout.BELOW,id-1);
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        imageHeight);
                 image.setLayoutParams(params);
-                relativeLayout.addView(image);
+                linearLayout.addView(image);
                 id++;
             }
         }
-        scrollView.addView(relativeLayout);
+        scrollView.addView(linearLayout);
     }
 
 }

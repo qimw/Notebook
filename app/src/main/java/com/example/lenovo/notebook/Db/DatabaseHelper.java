@@ -15,7 +15,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     Context mContext;
 
     public static final String CREATE_DATA = "create table article_one("
-            +"id integer primary key autoincrement,"
+            +"id integer primary key,"
             +"title text,"
             +"content text,"
             + "status int,"

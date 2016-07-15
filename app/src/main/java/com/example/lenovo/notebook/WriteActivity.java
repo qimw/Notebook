@@ -56,6 +56,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -70,7 +71,7 @@ public class WriteActivity extends BaseActivity implements View.OnClickListener{
     private static final int REQUEST_CODE_CAPTURE_CAMERA = 1022;
     private RichTextEditor editor;
     private View btn1, btn2, btn3;
-    private Intent start;
+    private Intent articleIntent;
     private static final File PHOTO_DIR = new File(
             Environment.getExternalStorageDirectory() + "/DCIM/Camera");
     private File mCurrentPhotoFile;// 照相机拍照得到的图片
@@ -91,11 +92,11 @@ public class WriteActivity extends BaseActivity implements View.OnClickListener{
         btn2.setOnClickListener(this);
         btn3.setOnClickListener(this);
 
-        start = getIntent();
+        articleIntent = getIntent();
 
-        if (!start.getBooleanExtra("isNew", true)) {
-            decodeContent(start);
-            BitmapHelper.delete(start);
+        if (!articleIntent.getBooleanExtra("isNew", true)) {
+            decodeContent(articleIntent);
+            BitmapHelper.delete(articleIntent);
         } else {
                 editor.createFirstEditTest();
         }
@@ -105,12 +106,9 @@ public class WriteActivity extends BaseActivity implements View.OnClickListener{
      * 负责处理编辑数据提交等事宜，请自行实现
      */
     protected boolean dealEditData(List<RichTextEditor.EditData> editList) {
-
         StringBuilder builder = new StringBuilder();
-        ArrayList<Bitmap> bitmaps = new ArrayList<>();
         String title;
         String content;
-        int count = 1;
         //取出标题
         EditText editText = (EditText)findViewById(R.id.title);
         title = editText.getText().toString();
@@ -119,13 +117,13 @@ public class WriteActivity extends BaseActivity implements View.OnClickListener{
 
             if (itemData.inputStr != null) {
                 builder.append(itemData.inputStr);
-                Log.d("RichEditor", "commit inputStr=" + itemData.inputStr);
             }else if(itemData.bitmap != null){
                 //content中添加标记
-                builder.append("|pic" + count + "|");
+                long id = Calendar.getInstance().getTimeInMillis();
+                builder.append("|" + id + "|");
+                Log.d("holo","from write activity" + builder.toString() + " " + id);
                 //将图片输出到本地
-                bitmaps.add(itemData.bitmap);
-                count++;
+                BitmapHelper.output(itemData.bitmap,id + ".jpg");
             }
         }
         content = builder.toString();
@@ -134,37 +132,20 @@ public class WriteActivity extends BaseActivity implements View.OnClickListener{
         intent.putExtra("content",content);
         intent.putExtra("status",0);
 
-        BitmapHelper.output(bitmaps,title);
+
         //保存时的逻辑处理
         if(title.equals("") || content.equals("")){
             Toast.makeText(WriteActivity.this,"标题或内容不能为空",Toast.LENGTH_SHORT).show();
-        }else if(start.getBooleanExtra("isNew",false) == true){
-            Toast toast = Toast.makeText(WriteActivity.this,"保存成功",Toast.LENGTH_SHORT);
-            switch(Database.add(intent)){
-                case Database.FAILED_TO_SAVE:
-                    toast.setText("保存失败");
-                    toast.show();
-                    break;
-                    //return false;
-                case Database.SAVE_SUCCEED:
-                    toast.show();
-                    finish();
-                    break;
-                    //return true;
-                case Database.TITLE_EXIST:
-                    toast.setText("标题已存在");
-                    toast.show();
-                    break;
-                    //return false;
-            }
+        }else if(articleIntent.getBooleanExtra("isNew",false) == true) {
+            intent.putExtra("id",Calendar.getInstance().getTimeInMillis());
+            Database.add(intent);
+            Toast.makeText(WriteActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
+            finish();
         }else{
-            if(title.equals(start.getStringExtra("title")) || (Database.queryId(title) == -1)){
-                intent.putExtra("id",start.getIntExtra("id",-1));
-                Database.update(intent);
-                finish();
-            }else{
-                    Toast.makeText(WriteActivity.this,"标题已存在",Toast.LENGTH_SHORT).show();
-            }
+            intent.putExtra("id",articleIntent.getLongExtra("id",0));
+            Log.d("holo","from write activity id=" + articleIntent.getLongExtra("id",0));
+            Database.update(intent);
+            finish();
         }
         return false;
     }
@@ -276,8 +257,8 @@ public class WriteActivity extends BaseActivity implements View.OnClickListener{
             //editor.createEditText("");
             for(int i = 0 ; i < contentCode.length() ; i++){
                 if((i == contentCode.length()-1)
-                        ||(contentCode.charAt(i) == '|' && contentCode.substring(i,(i+4)>contentCode.length()? contentCode.length():(i+4)).equals("|pic"))){
-                    if((i+4)>contentCode.length()){
+                        ||(contentCode.charAt(i) == '|' &&(i + 14)<contentCode.length()&&(contentCode.charAt(i+14)) == '|')){
+                    if((i+14)>contentCode.length()){
                         i = contentCode.length();
                     }
                     //设置前面的文字
@@ -288,20 +269,12 @@ public class WriteActivity extends BaseActivity implements View.OnClickListener{
                             break;
                         }
                     }
-                    //检测图片编号是一位数还是两位数
-                    String tempImageNumber = null;
-                    if(contentCode.charAt(i + 5) == '|'){
-                        tempImageNumber = contentCode.substring(i + 4,i + 5);
-                        former = i + 6;
-                        i += 5;//因为循环中会自增
-                    }else if(contentCode.charAt(i + 6) == '|'){
-                        tempImageNumber = contentCode.substring(i + 4,i + 6);
-                        former = i + 7;
-                        i += 6;//因为循环中会自增
-                    }
-                    int imageNumber;
-                    imageNumber = new Integer(tempImageNumber);
-                    String address = Environment. getExternalStorageDirectory()+"/notebookdata/" + title + imageNumber + ".jpg";
+                    String number = contentCode.substring(i + 1,i + 14);
+                    former = i;
+                    former += 15;
+                    i += 14;
+                    Log.d("holo","former:" + former + "i:" + i);
+                    String address = Environment. getExternalStorageDirectory()+"/notebookdata/" + number + ".jpg";
                     Log.d("holo",address);
                     insertBitmap(address);
                 }
@@ -309,7 +282,7 @@ public class WriteActivity extends BaseActivity implements View.OnClickListener{
     }
     @Override
     public void onBackPressed() {
-        if(start.getBooleanExtra("isNew",false) == false){
+        if(articleIntent.getBooleanExtra("isNew",false) == false){
             Toast.makeText(WriteActivity.this,"未保存的笔记将会丢失，请保存后退出",Toast.LENGTH_SHORT).show();
         }else{
             super.onBackPressed();
@@ -318,100 +291,3 @@ public class WriteActivity extends BaseActivity implements View.OnClickListener{
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//public class WriteActivity extends BaseActivity {
-//    private Button save;
-//    private Button quit;
-//    private Button clean;
-//    private EditText title;
-//    private EditText content;
-//    private Boolean isNew;
-//    private String oldTitle;
-//    private int id=-1;
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState){
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.write);
-//        save = (Button)findViewById(R.id.save);
-//        clean = (Button)findViewById(R.id.clean);
-//        title = (EditText)findViewById(R.id.title);
-//        content = (EditText)findViewById(R.id.content);
-//        isNew = getIntent().getBooleanExtra("isNew",false);
-//        if(!isNew){
-//            oldTitle = getIntent().getStringExtra("title");
-//            title.setText(oldTitle);
-//            content.setText(getIntent().getStringExtra("content"));
-//            id = getIntent().getIntExtra("id",-1);
-//        }
-//
-//        save.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                String article_title = title.getText().toString();
-//                String article_content = content.getText().toString();
-//
-//                if(!(article_content.equals("")||article_title.equals(""))){
-//                    Intent intent = new Intent();
-//                    intent.putExtra("title",article_title);
-//                    intent.putExtra("content", article_content);
-//                    intent.putExtra("status",0);
-//                    if(id ==-1){
-//                        int result = Database.add(intent);
-//                        if(result == Database.SAVE_SUCCEED){
-//                            Toast.makeText(WriteActivity.this,"保存成功",Toast.LENGTH_SHORT).show();
-//                            finish();
-//                        }else if(result == Database.TITLE_EXIST){
-//                            Toast.makeText(WriteActivity.this,"标题已存在",Toast.LENGTH_SHORT).show();
-//                        }else if(result == Database.FAILED_TO_SAVE){
-//                            Toast.makeText(WriteActivity.this,"保存失败",Toast.LENGTH_SHORT).show();
-//                        }
-//
-//                    }else{
-//                        intent.putExtra("id",id);
-//                        Database.update(intent);
-//                        finish();
-//                    }
-//                }else{
-//                    Toast.makeText(WriteActivity.this,"未输入标题或内容",Toast.LENGTH_LONG).show();
-//                }
-//
-//            }
-//        });
-//
-//        clean.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                title.setText("");
-//                content.setText("");
-//            }
-//        });
-//
-//    }
-//}

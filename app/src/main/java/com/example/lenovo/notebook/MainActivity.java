@@ -33,6 +33,7 @@ public class MainActivity extends BaseActivity {
         if(!dir.exists()){
             dir.mkdirs();
         }
+
         //SharedPreferences.Editor editor = getSharedPreferences("password",MODE_PRIVATE).edit();
         SharedPreferences sp = getSharedPreferences("password",MODE_PRIVATE);
 

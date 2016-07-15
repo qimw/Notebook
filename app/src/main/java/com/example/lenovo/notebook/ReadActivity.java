@@ -68,6 +68,7 @@ public class ReadActivity extends BaseActivity {
                 Intent intent = new Intent();
                 intent.putExtra("title",(articleList.get(position)).getTitle());
                 intent.putExtra("content",articleList.get(position).getContent());
+                intent.putExtra("id",articleList.get(position).getId());
                 Database.remove(intent);
                 BitmapHelper.delete(intent);
                 articleList.remove(position);
@@ -78,6 +79,7 @@ public class ReadActivity extends BaseActivity {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(mCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
+        Log.d("holo",articleList.size() + "");
         if(articleList.size() == 0){
             note_of_no_title.setText("还没有写笔记哦");
             note_of_no_title.setVisibility(View.VISIBLE);
@@ -90,7 +92,8 @@ public class ReadActivity extends BaseActivity {
                 String title = cursor.getString(cursor.getColumnIndex("title"));
                 String content = cursor.getString(cursor.getColumnIndex("content"));
                 int status = cursor.getInt(cursor.getColumnIndex("status"));
-                Article article = new Article(title,content,status);
+                long id = cursor.getLong(cursor.getColumnIndex("id"));
+                Article article = new Article(title,content,status,id);
                 articleList.add(article);
             }while(cursor.moveToNext());
         }

@@ -17,4 +17,10 @@
     <string name="input_content_here">在这里输入内容</string>
     <string name="input_title_here">在这里输入题目</string>
     <string name="set_color">设置颜色</string>
+    <string name="delete_article_in_cloud">从云端删除</string>
+    <string name="no_internet">未连接到互联网</string>
+    <string name="articles_in_cloud">云端笔记列表:</string>
+    <string name="get_article_list_in_cloud">获得云端笔记列表</string>
+    <string name="cancel">取消</string>
+    <string name="ok">确定</string>
 </resources>

@@ -29,8 +29,8 @@ public class Decoder  {
         for(int i = 0 ; i < contentCode.length() ; i++){
 
             if((i == contentCode.length()-1)
-                    ||(contentCode.charAt(i) == '|' && contentCode.substring(i,(i+4)>contentCode.length()? contentCode.length():(i+4)).equals("|pic"))){
-                if((i+4)>contentCode.length()){
+                    ||(contentCode.charAt(i) == '|' &&(i + 14)<contentCode.length()&&(contentCode.charAt(i+14)) == '|')){
+                if((i+14)>contentCode.length()){
                     i = contentCode.length();
                 }
                 //设置前面的文字
@@ -41,21 +41,10 @@ public class Decoder  {
                         break;
                     }
                 }
-
-                String tempImageNumber = null;
-                //检测图片编号是一位数还是两位数
-                if(contentCode.charAt(i + 5) == '|'){
-                    tempImageNumber = contentCode.substring(i + 4,i + 5);
-                    former = i + 6;
-                    i += 5;//因为循环中会自增
-                }else if(contentCode.charAt(i + 6) == '|'){
-                    tempImageNumber = contentCode.substring(i + 4,i + 6);
-                    former = i + 7;
-                    i += 6;//因为循环中会自增
-                }
-                int imageNumber;
-                imageNumber = new Integer(tempImageNumber);
-                String address = title + imageNumber + ".jpg";
+                String number = contentCode.substring(i + 1,i + 14);
+                former += 15;
+                i += 14;
+                String address = number + ".jpg";
                 pictureNames.add(address);
             }
         }

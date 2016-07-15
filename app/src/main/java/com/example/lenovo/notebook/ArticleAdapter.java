@@ -35,11 +35,13 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         TextView content;
         TextView title;
         TextView status;
+        TextView id;
         public ViewHolder(View v){
             super(v);
             content = (TextView)v.findViewById(R.id.article_content);
             title = (TextView)v.findViewById(R.id.article_title);
             status = (TextView)v.findViewById(R.id.status);
+            id = (TextView)v.findViewById(R.id.article_id);
             v.setOnClickListener(this);
 //            v.setOnLongClickListener(this);
         }
@@ -48,15 +50,16 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         public void onClick(View view) {
             TextView articleTitle = (TextView) view.findViewById(R.id.article_title);
             TextView articleContent = (TextView) view.findViewById(R.id.article_content);
+            TextView articleId = (TextView) view.findViewById(R.id.article_id);
             Intent intent = new Intent(NotebookApp.getInstance().getApplicationContext(), ReadArticleActivity.class);
             intent.putExtra("title", articleTitle.getText().toString());
             intent.putExtra("content", articleContent.getText().toString());
             intent.addFlags(intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra("id",Database.queryId(articleTitle.getText().toString()));
+            intent.putExtra("id",new Long(articleId.getText().toString()));
+            Log.d("holo","from article adapter id=" + articleId.getText().toString());
             intent.putExtra("isNew",false);
             NotebookApp.getInstance().getApplicationContext().startActivity(intent);
             context.overridePendingTransition(R.anim.anim_in,R.anim.anim_out);
-
         }
     }
     private List<Article> articleList = new ArrayList<Article>();
@@ -70,10 +73,12 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     public int getItemCount() {
         return articleList.size();
     }
+
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.content.setText(articleList.get(position).getContent());
         holder.title.setText(articleList.get(position).getTitle());
+        holder.id.setText(articleList.get(position).getId() + "");
         int status = articleList.get(position).getStatus();
         if(status == 0){
             holder.status.setText("未同步");
