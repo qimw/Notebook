@@ -23,4 +23,8 @@
     <string name="get_article_list_in_cloud">获得云端笔记列表</string>
     <string name="cancel">取消</string>
     <string name="ok">确定</string>
+    <string name="blue">蓝色</string>
+    <string name="italic">斜体</string>
+    <string name="bold">加粗</string>
+    <string name="underline">下划线</string>
 </resources>

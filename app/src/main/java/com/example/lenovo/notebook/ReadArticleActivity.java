@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -94,7 +96,8 @@ public class ReadArticleActivity extends BaseActivity{
                     TextView content = new TextView(this);
 
                     content.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
-                    content.setText(tempContent);
+                    Spanned spanned = Html.fromHtml(tempContent);
+                    content.setText(spanned);
                     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                             ViewGroup.LayoutParams.WRAP_CONTENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT);

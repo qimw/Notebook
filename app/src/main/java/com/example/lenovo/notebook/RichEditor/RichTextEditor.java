@@ -12,6 +12,16 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.Html;
+import android.text.InputType;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
+import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -49,6 +59,45 @@ public class RichTextEditor extends ScrollView {
 	private LayoutTransition mTransitioner; // 只在图片View添加或remove时，触发transition动画
 	private int editNormalPadding = 0; //
 	private int disappearingImageIndex = 0;
+	private EditText thisFocusEdit = null;
+	//以下是新增富文本部分
+	private Boolean color = false;
+	private Boolean italic = false;
+	private Boolean bold = false;
+	private Boolean underline = false;
+	private MyTextWatcher textWatcher = new MyTextWatcher();
+
+	public void setColor(){
+		if(color == false){
+			color =true;
+		}else{
+			color=false;
+		}
+	}
+
+	public void setBold() {
+		if(bold == false){
+			bold = true;
+		}else{
+			bold = false;
+		}
+	}
+
+	public void setItalic() {
+		if(italic == false){
+			italic = true;
+		}else{
+			italic = false;
+		}
+	}
+
+	public void setUnderline() {
+		if(underline == false){
+			underline = true;
+		}else{
+			underline = false;
+		}
+	}
 
 	private AppCompatActivity appCompatActivity = null;//用来初始化图片
 
@@ -110,6 +159,7 @@ public class RichTextEditor extends ScrollView {
 	}
 
 	public void createFirstEditTest(){
+
 		LinearLayout.LayoutParams firstEditParam = new LinearLayout.LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 		editNormalPadding = dip2px(EDIT_PADDING);
@@ -148,7 +198,6 @@ public class RichTextEditor extends ScrollView {
 			return editText;
 		}
 	}
-
 
 	/**
 	 * 处理软键盘backSpace回退事件
@@ -208,11 +257,13 @@ public class RichTextEditor extends ScrollView {
 	public EditText createEditText(String hint, int paddingTop) {
 		EditText editText = (EditText) inflater.inflate(R.layout.edit_item1,
 				null);
+
 		editText.setOnKeyListener(keyListener);
 		editText.setTag(viewTagIndex++);
 		editText.setPadding(editNormalPadding, paddingTop, editNormalPadding, 0);
 		editText.setHint(hint);
 		editText.setOnFocusChangeListener(focusListener);
+		editText.addTextChangedListener(new MyTextWatcher());
 		return editText;
 	}
 
@@ -240,7 +291,6 @@ public class RichTextEditor extends ScrollView {
 		insertImage(bmp, imagePath);
 	}
 
-
 	/**
 	 * 插入一张图片
 	 */
@@ -250,24 +300,16 @@ public class RichTextEditor extends ScrollView {
 		}
 			String lastEditStr = lastFocusEdit.getText().toString();
 			int cursorIndex = lastFocusEdit.getSelectionStart();
-			String editStr1 = lastEditStr.substring(0, cursorIndex).trim();
+
+			String editStr1 = lastEditStr.substring(0, cursorIndex);
 			int lastEditIndex = allLayout.indexOfChild(lastFocusEdit);
-			Log.d("RichEditor",lastEditStr + "  00" + cursorIndex + lastEditIndex);
 			if (lastEditStr.length() == 0 || editStr1.length() == 0) {
 				// 如果EditText为空，或者光标已经顶在了editText的最前面，则直接插入图片，并且EditText下移即可
 				addImageViewAtIndex(lastEditIndex, bitmap, imagePath);
 			} else {
 				// 如果EditText非空且光标不在最顶端，则需要添加新的imageView和EditText
-				lastFocusEdit.setText(editStr1);
 				lastFocusEdit.setSelection(editStr1.length());
-				String editStr2 = lastEditStr.substring(cursorIndex).trim();
-				if (allLayout.getChildCount() - 1 == lastEditIndex
-						|| editStr2.length() > 0) {
-					addEditTextAtIndex(lastEditIndex + 1, editStr2);
-					Log.d("RichEditor",(editStr2  == null)  + "0" + editStr2);
-				}
-
-
+				addEditTextAtIndex(lastEditIndex + 1);
 				addImageViewAtIndex(lastEditIndex +1, bitmap, imagePath);
 				//lastFocusEdit.setSelection(editStr1.length(), editStr1.length());
 			}
@@ -288,20 +330,17 @@ public class RichTextEditor extends ScrollView {
 	 * 
 	 * @param index
 	 *            位置
-	 * @param editStr
+	 *
 	 *            EditText显示的文字
 	 */
-	private void addEditTextAtIndex(final int index, String editStr) {
-		final EditText editText2 = createEditText("", getResources()
-				.getDimensionPixelSize(R.dimen.edit_padding_top));
-		editText2.setText(editStr);
+	private void addEditTextAtIndex(final int index) {
+		EditText editText2 = createEditText(null,dip2px(EDIT_PADDING));
 		editText2.requestFocus();
-		editText2.setSelection(editStr.length());
 		lastFocusEdit = editText2;
-		Log.d("RichEditor",(editText2.getText().toString().equals("")) + "0000");
-		// 请注意此处，EditText添加、或删除不触动Transition动画
+//		// 请注意此处，EditText添加、或删除不触动Transition动画
 		allLayout.setLayoutTransition(null);
-		allLayout.addView(editText2, index);
+		allLayout.addView(editText2,index);
+
 		allLayout.setLayoutTransition(mTransitioner); // remove之后恢复transition动画
 	}
 
@@ -430,7 +469,7 @@ public class RichTextEditor extends ScrollView {
 			EditData itemData = new EditData();
 			if (itemView instanceof EditText) {
 				EditText item = (EditText) itemView;
-				itemData.inputStr = item.getText().toString();
+				itemData.inputStr = Html.toHtml(item.getText());
 			} else if (itemView instanceof RelativeLayout) {
 				DataImageView item = (DataImageView) itemView
 						.findViewById(R.id.edit_imageView);
@@ -447,5 +486,48 @@ public class RichTextEditor extends ScrollView {
 		public String inputStr;
 		public String imagePath;
 		public Bitmap bitmap;
+	}
+
+	class MyTextWatcher implements TextWatcher {
+		boolean yes = false;
+
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			Log.d("holo","from before " + s + start + count + after);
+		}
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before, int count) {
+			Log.d("holo","ontextchange");
+			SpannableString spannableString = new SpannableString(s);
+			if (yes == false) {
+				Log.d("holo","ontextchange");
+				yes = true;
+				if (color == true) {
+					ForegroundColorSpan span = new ForegroundColorSpan(Color.BLUE);
+					spannableString.setSpan(span, start, start + count, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				}
+				if (italic == true) {
+					spannableString.setSpan(new StyleSpan(android.graphics.Typeface.ITALIC), start, start + count, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+				}
+				if (bold == true) {
+					spannableString.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, start + count, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+				}
+				if (underline == true) {
+					spannableString.setSpan(new UnderlineSpan(), start, start + count, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+				}
+				lastFocusEdit.setText(spannableString);
+				lastFocusEdit.setSelection(lastFocusEdit.getText().toString().length());
+				Log.d("holo",Html.toHtml(spannableString));
+
+			}
+			else {
+				yes = false;
+			}
+		}
+
+		@Override
+		public void afterTextChanged(Editable s) {
+			Log.d("holo","from after" + s );
+		}
 	}
 }

@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -76,6 +77,15 @@ public class WriteActivity extends BaseActivity implements View.OnClickListener{
             Environment.getExternalStorageDirectory() + "/DCIM/Camera");
     private File mCurrentPhotoFile;// 照相机拍照得到的图片
 
+    private Button color;
+    private Button italic;
+    private Button bold;
+    private Button underline;
+    private boolean colorPressed = false;
+    private boolean italicPressed = false;
+    private boolean boldPressed = false;
+    private boolean underlinePressed = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,12 +104,77 @@ public class WriteActivity extends BaseActivity implements View.OnClickListener{
 
         articleIntent = getIntent();
 
+        color = (Button)findViewById(R.id.color);
+        italic = (Button)findViewById(R.id.italic);
+        bold = (Button)findViewById(R.id.bold);
+        underline = (Button)findViewById(R.id.underline);
+
         if (!articleIntent.getBooleanExtra("isNew", true)) {
             decodeContent(articleIntent);
             BitmapHelper.delete(articleIntent);
         } else {
                 editor.createFirstEditTest();
         }
+
+        color.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(colorPressed == false){
+                    color.setTextColor(Color.BLUE);
+                    colorPressed = true;
+                    editor.setColor();
+                }else{
+                    color.setTextColor(Color.BLACK);
+                    colorPressed = false;
+                    editor.setColor();
+                }
+            }
+        });
+
+        bold.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(boldPressed == false){
+                            bold.setTextColor(Color.BLUE);
+                            boldPressed = true;
+                            editor.setBold();
+                        }else{
+                            bold.setTextColor(Color.BLACK);
+                            boldPressed = false;
+                            editor.setBold();
+                        }
+                    }
+        });
+
+        italic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(italicPressed == false){
+                    italic.setTextColor(Color.BLUE);
+                    italicPressed = true;
+                    editor.setItalic();
+                }else{
+                    italic.setTextColor(Color.BLACK);
+                    italicPressed = false;
+                    editor.setItalic();
+                }
+            }
+        });
+
+        underline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(underlinePressed == false){
+                    underline.setTextColor(Color.BLUE);
+                    underlinePressed = true;
+                    editor.setUnderline();
+                }else{
+                    underline.setTextColor(Color.BLACK);
+                    underlinePressed = false;
+                    editor.setUnderline();
+                }
+            }
+        });
     }
 
     /**
@@ -114,14 +189,12 @@ public class WriteActivity extends BaseActivity implements View.OnClickListener{
         title = editText.getText().toString();
         //取出其余项
         for (RichTextEditor.EditData itemData : editList) {
-
             if (itemData.inputStr != null) {
                 builder.append(itemData.inputStr);
             }else if(itemData.bitmap != null){
                 //content中添加标记
                 long id = Calendar.getInstance().getTimeInMillis();
                 builder.append("|" + id + "|");
-                Log.d("holo","from write activity" + builder.toString() + " " + id);
                 //将图片输出到本地
                 BitmapHelper.output(itemData.bitmap,id + ".jpg");
             }
