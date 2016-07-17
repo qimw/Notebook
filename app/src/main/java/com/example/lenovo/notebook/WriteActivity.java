@@ -21,6 +21,10 @@ import android.support.annotation.RequiresPermission;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
@@ -326,6 +330,7 @@ public class WriteActivity extends BaseActivity implements View.OnClickListener{
             ((EditText)findViewById(R.id.title)).setText(title);
             //添加内容
             String contentCode = intent.getStringExtra("content");
+        Log.d("holo","000" + contentCode + "000");
             int former = 0;
             //editor.createEditText("");
             for(int i = 0 ; i < contentCode.length() ; i++){
@@ -337,7 +342,10 @@ public class WriteActivity extends BaseActivity implements View.OnClickListener{
                     //设置前面的文字
                     if(former < i){
                         String tempContent = contentCode.substring(former,i);
-                        editor.createEditText(tempContent);
+                        //if(!tempContent.equals("\n")){
+                        Log.d("holo","内容：" + tempContent);
+                        Spanned spanned = RichTextEditor.trimTrailingWhitespace((SpannableStringBuilder) Html.fromHtml(tempContent));
+                        editor.createEditText(spanned);
                         if(i == contentCode.length()){
                             break;
                         }
@@ -346,9 +354,7 @@ public class WriteActivity extends BaseActivity implements View.OnClickListener{
                     former = i;
                     former += 15;
                     i += 14;
-                    Log.d("holo","former:" + former + "i:" + i);
                     String address = Environment. getExternalStorageDirectory()+"/notebookdata/" + number + ".jpg";
-                    Log.d("holo",address);
                     insertBitmap(address);
                 }
             }
@@ -362,5 +368,4 @@ public class WriteActivity extends BaseActivity implements View.OnClickListener{
         }
 
     }
-
 }

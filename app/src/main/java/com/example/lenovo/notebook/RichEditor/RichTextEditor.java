@@ -17,6 +17,7 @@ import android.text.Html;
 import android.text.InputType;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
@@ -169,13 +170,14 @@ public class RichTextEditor extends ScrollView {
 		lastFocusEdit = firstEdit;
 	}
 
-	public EditText createEditText(String text) {
+	public EditText createEditText(Spanned text) {
 		if(lastFocusEdit == null){
 			LinearLayout.LayoutParams firstEditParam = new LinearLayout.LayoutParams(
 					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 			EditText editText = createEditText(null,dip2px(EDIT_PADDING));
 			allLayout.addView(editText, firstEditParam);
 			lastFocusEdit = editText;
+			Log.d("holo","from null");
 			if(text != null){
 				editText.setText(text);
 				editText.setSelection(text.length());
@@ -183,10 +185,12 @@ public class RichTextEditor extends ScrollView {
 			lastFocusEdit.requestFocus();
 			return editText;
 		}else if (lastFocusEdit.getText().toString().equals("")){
+			Log.d("holo","from  ");
 			lastFocusEdit.setText(text);
 			lastFocusEdit.setSelection(text.length());
 			return lastFocusEdit;
 		}else{
+			Log.d("holo","from not null");
 			LinearLayout.LayoutParams firstEditParam = new LinearLayout.LayoutParams(
 					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 			EditText editText = createEditText(null,dip2px(EDIT_PADDING));
@@ -201,7 +205,7 @@ public class RichTextEditor extends ScrollView {
 
 	/**
 	 * 处理软键盘backSpace回退事件
-	 * 
+	 *
 	 * @param editTxt
 	 *            光标所在的文本输入框
 	 */
@@ -239,7 +243,7 @@ public class RichTextEditor extends ScrollView {
 
 	/**
 	 * 处理图片叉掉的点击事件
-	 * 
+	 *
 	 * @param view
 	 *            整个image对应的relativeLayout view
 	 * @type 删除类型 0代表backspace删除 1代表按红叉按钮删除
@@ -282,7 +286,7 @@ public class RichTextEditor extends ScrollView {
 
 	/**
 	 * 根据绝对路径添加view
-	 * 
+	 *
 	 * @param imagePath
 	 */
 	public void insertImage(String imagePath, AppCompatActivity appCompatActivity) {
@@ -327,7 +331,7 @@ public class RichTextEditor extends ScrollView {
 
 	/**
 	 * 在特定位置插入EditText
-	 * 
+	 *
 	 * @param index
 	 *            位置
 	 *
@@ -373,7 +377,7 @@ public class RichTextEditor extends ScrollView {
 
 	/**
 	 * 根据view的宽度，动态缩放bitmap尺寸
-	 * 
+	 *
 	 * @param width
 	 *            view的宽度
 	 */
@@ -399,7 +403,6 @@ public class RichTextEditor extends ScrollView {
 			@Override
 			public void startTransition(LayoutTransition transition,
 					ViewGroup container, View view, int transitionType) {
-
 			}
 
 			@Override
@@ -408,7 +411,7 @@ public class RichTextEditor extends ScrollView {
 				if (!transition.isRunning()
 						&& transitionType == LayoutTransition.CHANGE_DISAPPEARING) {
 					// transition动画结束，合并EditText
-					// mergeEditText();
+					 //mergeEditText();
 				}
 			}
 		});
@@ -426,27 +429,27 @@ public class RichTextEditor extends ScrollView {
 			Log.d("LeiTest", "合并EditText");
 			EditText preEdit = (EditText) preView;
 			EditText nextEdit = (EditText) nextView;
-			String str1 = preEdit.getText().toString();
-			String str2 = nextEdit.getText().toString();
-			String mergeText = "";
-			if (str2.length() > 0) {
-				mergeText = str1 + "\n" + str2;
-			} else {
-				mergeText = str1;
-			}
+			Spanned str1 = preEdit.getText();
+			Spanned str2 = nextEdit.getText();
+//			Spanned mergeText = "";
+//			if (str2.length() > 0) {
+//				mergeText = str1 + "\n" + str2;
+//			} else {
+//				mergeText = str1;
+//			}
 
-			allLayout.setLayoutTransition(null);
-			allLayout.removeView(nextEdit);
-			preEdit.setText(mergeText);
-			preEdit.requestFocus();
-			preEdit.setSelection(str1.length(), str1.length());
-			allLayout.setLayoutTransition(mTransitioner);
+//			allLayout.setLayoutTransition(null);
+//			allLayout.removeView(nextEdit);
+//			preEdit.setText(mergeText);
+//			preEdit.requestFocus();
+//			preEdit.setSelection(str1.length(), str1.length());
+//			allLayout.setLayoutTransition(mTransitioner);
 		}
 	}
 
 	/**
 	 * dp和pixel转换
-	 * 
+	 *
 	 * @param dipValue
 	 *            dp值
 	 * @return 像素值
@@ -488,6 +491,20 @@ public class RichTextEditor extends ScrollView {
 		public Bitmap bitmap;
 	}
 
+	public static SpannableStringBuilder trimTrailingWhitespace(
+			SpannableStringBuilder spannableString) {
+
+		if (spannableString == null)
+			return new SpannableStringBuilder("");
+
+		int i = spannableString.length();
+
+		// loop back to the first non-whitespace character
+		while (--i >= 0 && Character.isWhitespace(spannableString.charAt(i))) {
+		}
+
+		return new SpannableStringBuilder(spannableString.subSequence(0, i + 1));
+	}
 	class MyTextWatcher implements TextWatcher {
 		boolean yes = false;
 
@@ -516,7 +533,13 @@ public class RichTextEditor extends ScrollView {
 					spannableString.setSpan(new UnderlineSpan(), start, start + count, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 				}
 				lastFocusEdit.setText(spannableString);
-				lastFocusEdit.setSelection(lastFocusEdit.getText().toString().length());
+				if(count - before > 0){
+					lastFocusEdit.setSelection(start + count - before);
+				}else{
+					lastFocusEdit.setSelection(start);
+				}
+
+
 				Log.d("holo",Html.toHtml(spannableString));
 
 			}
@@ -530,4 +553,5 @@ public class RichTextEditor extends ScrollView {
 			Log.d("holo","from after" + s );
 		}
 	}
+
 }

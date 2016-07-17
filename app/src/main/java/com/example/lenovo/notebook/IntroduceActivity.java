@@ -39,11 +39,13 @@ public class IntroduceActivity extends BaseActivity {
         View view1 = LayoutInflater.from(IntroduceActivity.this).inflate(R.layout.tab1, null);
         View view2 = LayoutInflater.from(IntroduceActivity.this).inflate(R.layout.tab2, null);
         View view3 = LayoutInflater.from(IntroduceActivity.this).inflate(R.layout.tab3, null);
+        View view4 = LayoutInflater.from(IntroduceActivity.this).inflate(R.layout.tab4, null);
 
         list = new ArrayList<View>();
         list.add(view1);
         list.add(view2);
         list.add(view3);
+        list.add(view4);
 
         Animation animation = AnimationUtils.loadAnimation(this,R.anim.anim_in);
         LayoutAnimationController controller = new LayoutAnimationController(animation);

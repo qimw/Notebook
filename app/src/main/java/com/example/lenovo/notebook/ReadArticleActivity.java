@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.Html;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.util.Log;
 import android.util.TypedValue;
@@ -39,7 +40,6 @@ import java.util.Calendar;
 public class ReadArticleActivity extends BaseActivity{
     private Button edit_article;
     private ScrollView scrollView;
-
 
     @Override
     protected  void onCreate(final Bundle savedInstanceState){
@@ -96,7 +96,7 @@ public class ReadArticleActivity extends BaseActivity{
                     TextView content = new TextView(this);
 
                     content.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
-                    Spanned spanned = Html.fromHtml(tempContent);
+                    Spanned spanned = RichTextEditor.trimTrailingWhitespace((SpannableStringBuilder) Html.fromHtml(tempContent));
                     content.setText(spanned);
                     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                             ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -109,8 +109,6 @@ public class ReadArticleActivity extends BaseActivity{
                         break;
                     }
                 }
-
-
                 String number = contentCode.substring(i + 1,i + 14);
                 Log.d("holo","from decode in read id=" + number);
                 former = i;
@@ -121,7 +119,7 @@ public class ReadArticleActivity extends BaseActivity{
                         ReadArticleActivity.this.getWindowManager().getDefaultDisplay().getWidth());
                 ImageView image = new ImageView(this);
                 image.setImageBitmap(tempBitmap);
-                image.setId(id);
+
                 int imageHeight = ReadArticleActivity.this.getWindowManager().getDefaultDisplay().getWidth() * tempBitmap.getHeight() / tempBitmap.getWidth();
                 RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
